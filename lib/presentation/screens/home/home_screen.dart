@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:widgetly/config/menu/menu_items.dart';
 //import 'package:widgetly/presentation/screens/buttons/buttons_screen.dart';
 
@@ -51,11 +52,13 @@ class _CustomListTile extends StatelessWidget {
       subtitle: Text(menuItem.subTitle),
       onTap: () {
         // TODO: NAVEGAR A OTRA PANTALLA
-        Navigator.pushNamed(context, menuItem.link);
+        //Navigator.pushNamed(context, menuItem.link);
         /*
         Navigator.of(context).push(
             MaterialPageRoute(builder: (context) => const ButtonsScreen()));
         */
+        // EXTENCION DE GO ROUTER
+        context.push(menuItem.link);
       },
     );
   }

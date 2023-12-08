@@ -12,6 +12,47 @@ class InfiniteScrollScreen extends StatefulWidget {
 
 class _InfiniteScrollScreenState extends State<InfiniteScrollScreen> {
   List<int> imagesIds = [1, 2, 3, 4, 5];
+  final ScrollController scrollController = ScrollController();
+  bool isLoading = false;
+  bool isMounted = true;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      if ((scrollController.position.pixels + 500) >=
+          scrollController.position.maxScrollExtent) {
+        // LOAD NEXT PAGE
+        loadNextPage();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+    isMounted = false;
+  }
+
+  Future loadNextPage() async {
+    // SE PREGUNTA PARA QUE NO VUELVA A HACER LA PETICION
+    // SI YA ESTA CARGANDO
+    if (isLoading) return;
+    isLoading = true;
+    setState(() {});
+    await Future.delayed(const Duration(seconds: 2));
+    addFiveImages();
+    isLoading = false;
+    // REVISAR SI ESTA MONTADO EL COMPONENTE / WIDGET
+    if (!isMounted) return;
+    setState(() {});
+  }
+
+  void addFiveImages() {
+    final lastId = imagesIds.last;
+    imagesIds.addAll([1, 2, 3, 4, 5].map((e) => lastId + e));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +66,7 @@ class _InfiniteScrollScreenState extends State<InfiniteScrollScreen> {
         removeTop: true,
         removeBottom: true,
         child: ListView.builder(
+            controller: scrollController,
             itemCount: imagesIds.length,
             itemBuilder: (context, index) {
               return FadeInImage(
